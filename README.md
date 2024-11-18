@@ -13,7 +13,7 @@ This project is a Bash script designed to analyze Nginx access logs and generate
   - Cross-Site Scripting (XSS) attempts
 - **Top IPs and URLs:** Identifies the most frequent IP addresses and URLs accessed, useful for identifying possible sources of traffic spikes or security threats.
 
-Additionally, the script fetches **IP location data** from **ipinfo.io** to provide geographical details for the client IPs. The final output is an interactive HTML dashboard that can be used for both traffic analysis and security monitoring.
+Additionally, the script fetches **IP location data** from [**ipinfo.io**](https://ipinfo.io) to provide geographical details for the client IPs. The final output is an interactive HTML dashboard that can be used for both traffic analysis and security monitoring.
 
 ### Nginx Standard Log Format
 
