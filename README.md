@@ -17,8 +17,7 @@ Additionally, the script fetches **IP location data** from [**ipinfo.io**](https
 
 ### Nginx Standard Log Format
 
-The script analyzes the **Nginx access log** format, which typically follows this structure:
-**Example log line:**
+The script analyzes the **Nginx access log** format.
 
 This log line contains the following fields:
 
