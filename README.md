@@ -15,6 +15,24 @@ This project is a Bash script designed to analyze Nginx access logs and generate
 
 Additionally, the script fetches **IP location data** from **ipinfo.io** to provide geographical details for the client IPs. The final output is an interactive HTML dashboard that can be used for both traffic analysis and security monitoring.
 
+### Nginx Standard Log Format
+
+The script analyzes the **Nginx access log** format, which typically follows this structure:
+
+<ip-address> - <user> [<timestamp>] "<request>" <status-code> <body-bytes-sent> "<referrer>" "<user-agent>"
+
+**Example log line:**
+
+This log line contains the following fields:
+
+1. **IP address**: `192.168.1.1` – The client's IP address.
+2. **Timestamp**: `[18/Nov/2024:15:27:36 +0000]` – The time of the request.
+3. **Request**: `"GET /index.html HTTP/1.1"` – The HTTP request made.
+4. **Status Code**: `200` – The HTTP status code returned.
+5. **Response Size**: `3054` – The size of the response body in bytes.
+6. **Referrer**: `"https://example.com/"` – The referrer URL.
+7. **User Agent**: `"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.97 Safari/537.36"` – The user agent string representing the browser making the request.
+
 ## Features:
 - Parses Nginx access logs.
 - Detects common web security vulnerabilities.
