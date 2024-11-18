@@ -1,5 +1,8 @@
 # Nginx Access Log Analyzer and Dashboard Generator
 
+![Nginx Access Log Analyzer Dashboard](https://raw.githubusercontent.com/aldotobing/nginx-access-log-analyzer/refs/heads/main/nginx-analyze.png)
+
+
 This project is a Bash script designed to analyze Nginx access logs and generate a detailed HTML dashboard with key metrics related to web traffic, security, and performance. The script parses the Nginx access logs to gather insights such as:
 
 - **Request Count:** Total number of requests received.
