@@ -18,9 +18,6 @@ Additionally, the script fetches **IP location data** from **ipinfo.io** to prov
 ### Nginx Standard Log Format
 
 The script analyzes the **Nginx access log** format, which typically follows this structure:
-
-<ip-address> - <user> [<timestamp>] "<request>" <status-code> <body-bytes-sent> "<referrer>" "<user-agent>"
-
 **Example log line:**
 
 This log line contains the following fields:
