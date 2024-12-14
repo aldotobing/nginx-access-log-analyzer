@@ -48,4 +48,4 @@ Clone the repository and run the script from the command line:
 ```bash
 git clone https://github.com/yourusername/nginx-access-log-analyzer.git
 cd nginx-access-log-analyzer
-./analyze_logs.sh
+./nginx-today-log.sh
