@@ -46,6 +46,6 @@ This log line contains the following fields:
 Clone the repository and run the script from the command line:
 
 ```bash
-git clone https://github.com/yourusername/nginx-access-log-analyzer.git
+git clone https://github.com/aldotobing/nginx-access-log-analyzer.git
 cd nginx-access-log-analyzer
 ./nginx-today-log.sh
