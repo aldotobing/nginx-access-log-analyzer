@@ -30,6 +30,7 @@ This log line contains the following fields:
 7. **User Agent**: `"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.97 Safari/537.36"` – The user agent string representing the browser making the request.
 
 ## Features:
+
 - Parses Nginx access logs.
 - Detects common web security vulnerabilities.
 - Provides detailed statistics on requests and errors.
@@ -37,15 +38,22 @@ This log line contains the following fields:
 - Generates a user-friendly HTML dashboard with interactive tables and charts.
 
 ## Requirements:
+
 - Bash
 - `jq` (for parsing JSON data)
 - `curl` (for fetching IP geolocation data)
 - Access to Nginx access logs.
 
 ## Installation:
+
 Clone the repository and run the script from the command line:
 
 ```bash
 git clone https://github.com/aldotobing/nginx-access-log-analyzer.git
 cd nginx-access-log-analyzer
 ./nginx-today-log.sh
+```
+
+## Download Log Option:
+
+For future analysis, the script includes an option to download the logs. This allows users to keep a record of past logs and perform historical analysis.
