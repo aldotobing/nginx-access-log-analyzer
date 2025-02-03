@@ -814,7 +814,7 @@ button, select, input {
     <div class="section">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
         <div style="display: flex; align-items: center; gap: 12px;">
-            <h2 style="margin: 0;">Recent Log Entries</h2>
+            <h2 style="margin: 0;">Log Entries</h2>
             <button onclick="toggleLogEntries()" class="toggle-button" aria-label="Toggle log entries">
                 <svg class="arrow-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M6 9l6 6 6-6"/>
