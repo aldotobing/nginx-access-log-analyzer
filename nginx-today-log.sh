@@ -217,7 +217,7 @@ while IFS= read -r line; do
 done <<< "$TOP_URLS"
 
 
-# Format recent log entries
+# Format recent log entries with download button
 LOG_ENTRIES=$(cat /tmp/today_log.txt | while IFS= read -r line; do
     echo "<div class='log-entry'>$line</div>"
 done)
@@ -623,6 +623,50 @@ button, select, input {
     font-size: 14px;
     line-height: 1.5;
 }
+
+.toggle-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s, transform 0.2s;
+    color: var(--primary);
+}
+
+.toggle-button:hover {
+    background-color: rgba(37, 99, 235, 0.1);
+}
+
+.toggle-button.active .arrow-icon {
+    transform: rotate(180deg);
+}
+
+.arrow-icon {
+    transition: transform 0.2s;
+}
+
+.download-button {
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 36px;
+}
+
+.download-button:hover {
+    background-color: #1d4ed8;
+}
 </style>
 
 </head>
@@ -768,11 +812,23 @@ button, select, input {
     </div>
 
     <div class="section">
-        <h2>Recent Log Entries</h2>
-        <div class="log-entries-container">
-            $LOG_ENTRIES
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <h2 style="margin: 0;">Recent Log Entries</h2>
+            <button onclick="toggleLogEntries()" class="toggle-button" aria-label="Toggle log entries">
+                <svg class="arrow-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M6 9l6 6 6-6"/>
+                </svg>
+            </button>
         </div>
+        <button onclick="downloadLogs()" class="download-button">
+            Download Logs
+        </button>
     </div>
+    <div class="log-entries-container" style="display: none;">
+        $LOG_ENTRIES
+    </div>
+</div>
 </div>
 
 <script>
@@ -822,6 +878,33 @@ document.querySelectorAll('.security-card').forEach(card => {
         }
     });
 });
+
+function downloadLogs() {
+    const element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(\`$(cat /tmp/today_log.txt)\`));
+    element.setAttribute('download', 'today_log.txt');
+
+    element.style.display = 'none';
+    document.body.appendChild(element);
+
+    element.click();
+
+    document.body.removeChild(element);
+}
+
+function toggleLogEntries() {
+    const logContainer = document.querySelector('.log-entries-container');
+    const toggleButton = document.querySelector('.toggle-button');
+    
+    if (logContainer.style.display === 'none') {
+        logContainer.style.display = 'block';
+        toggleButton.classList.add('active');
+    } else {
+        logContainer.style.display = 'none';
+        toggleButton.classList.remove('active');
+    }
+}
+
 </script>
 
 </body>
