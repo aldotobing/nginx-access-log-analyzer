@@ -217,10 +217,25 @@ while IFS= read -r line; do
 done <<< "$TOP_URLS"
 
 
-# Format recent log entries with download button
+# Format recent log entries
 LOG_ENTRIES=$(cat /tmp/today_log.txt | while IFS= read -r line; do
     echo "<div class='log-entry'>$line</div>"
 done)
+
+DOWNLOADS_DIR="/usr/share/nginx/html/downloads"
+sudo mkdir -p "$DOWNLOADS_DIR"
+
+# Generate a temporary file with a random name for downloads
+TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+RANDOM_STRING=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
+DOWNLOAD_FILENAME="nginx_logs_${TIMESTAMP}_${RANDOM_STRING}.txt"
+DOWNLOAD_PATH="$DOWNLOADS_DIR/$DOWNLOAD_FILENAME"
+
+# Copy the log file to the downloads directory
+sudo cp "$TEMP_LOG" "$DOWNLOAD_PATH"
+sudo chmod 644 "$DOWNLOAD_PATH"
+
+LOG_CONTENT_B64=$(base64 -w 0 "$TEMP_LOG")
 
 # Write the complete HTML file
 sudo cat > $HTML_FILE << EOF
@@ -624,49 +639,81 @@ button, select, input {
     line-height: 1.5;
 }
 
-.toggle-button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 8px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.2s, transform 0.2s;
-    color: var(--primary);
-}
+.section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
 
-.toggle-button:hover {
-    background-color: rgba(37, 99, 235, 0.1);
-}
+    .section-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 0;
+        color: var(--primary);
+        font-size: clamp(16px, 4.5vw, 20px);
+    }
 
-.toggle-button.active .arrow-icon {
-    transform: rotate(180deg);
-}
+    .expand-button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 8px;
+        border-radius: 4px;
+        transition: all 0.2s ease;
+        color: var(--primary);
+    }
 
-.arrow-icon {
-    transition: transform 0.2s;
-}
+    .expand-button:hover {
+        background: rgba(37, 99, 235, 0.1);
+    }
 
-.download-button {
-    background-color: var(--primary);
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: background-color 0.2s;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    height: 36px;
-}
+    .expand-button svg {
+        transition: transform 0.2s ease;
+    }
 
-.download-button:hover {
-    background-color: #1d4ed8;
-}
+    .expand-button.expanded svg {
+        transform: rotate(180deg);
+    }
+
+    .log-entries-wrapper {
+        display: none;
+        margin-top: 15px;
+    }
+
+    .log-entries-wrapper.expanded {
+        display: block;
+    }
+
+    .controls {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .download-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        background-color: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+    }
+
+    .download-button:hover {
+        background-color: #1d4ed8;
+    }
+
+    .download-button svg {
+        width: 16px;
+        height: 16px;
+    }
 </style>
 
 </head>
@@ -812,26 +859,36 @@ button, select, input {
     </div>
 
     <div class="section">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-        <div style="display: flex; align-items: center; gap: 12px;">
-            <h2 style="margin: 0;">Log Entries</h2>
-            <button onclick="toggleLogEntries()" class="toggle-button" aria-label="Toggle log entries">
-                <svg class="arrow-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M6 9l6 6 6-6"/>
-                </svg>
-            </button>
+        <div class="section-header">
+            <h2 class="section-title">
+                Recent Log Entries
+            </h2>
+            <div class="controls">
+                <button class="download-button" onclick="downloadLogs()">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    Download Logs
+                </button>
+                <button class="expand-button" onclick="toggleLogs()" aria-label="Toggle log entries">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+            </div>
         </div>
-        <button onclick="downloadLogs()" class="download-button">
-            Download Logs
-        </button>
-    </div>
-    <div class="log-entries-container" style="display: none;">
-        $LOG_ENTRIES
+        <div class="log-entries-wrapper">
+            <div class="log-entries-container">
+                $LOG_ENTRIES
+            </div>
+        </div>
     </div>
 </div>
 </div>
 
 <script>
+const logContent = "${LOG_CONTENT_B64}";
+
 function showSecurityLogs(modalId) {
     const modal = document.getElementById(modalId);
     modal.style.display = 'block';
@@ -879,36 +936,45 @@ document.querySelectorAll('.security-card').forEach(card => {
     });
 });
 
-function downloadLogs() {
-    const element = document.createElement('a');
-    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(\`$(cat /tmp/today_log.txt)\`));
-    element.setAttribute('download', 'today_log.txt');
-
-    element.style.display = 'none';
-    document.body.appendChild(element);
-
-    element.click();
-
-    document.body.removeChild(element);
-}
-
-function toggleLogEntries() {
-    const logContainer = document.querySelector('.log-entries-container');
-    const toggleButton = document.querySelector('.toggle-button');
+function toggleLogs() {
+    const wrapper = document.querySelector('.log-entries-wrapper');
+    const button = document.querySelector('.expand-button');
     
-    if (logContainer.style.display === 'none') {
-        logContainer.style.display = 'block';
-        toggleButton.classList.add('active');
-    } else {
-        logContainer.style.display = 'none';
-        toggleButton.classList.remove('active');
-    }
+    wrapper.classList.toggle('expanded');
+    button.classList.toggle('expanded');
+    
+    // Update aria-expanded attribute for accessibility
+    const isExpanded = wrapper.classList.contains('expanded');
+    button.setAttribute('aria-expanded', isExpanded);
 }
 
+function downloadLogs() {
+    // Decode the base64 content
+    const decodedContent = atob(logContent);
+    
+    // Create blob and download
+    const blob = new Blob([decodedContent], { type: 'text/plain' });
+    const url = window.URL.createObjectURL(blob);
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = \`nginx-logs-\${timestamp}.txt\`;
+    document.body.appendChild(a);
+    a.click();
+    
+    // Cleanup
+    setTimeout(() => {
+        window.URL.revokeObjectURL(url);
+        a.remove();
+    }, 100);
+}
 </script>
 
 </body>
 </html>
 EOF
+
+find "$DOWNLOADS_DIR" -type f -name "nginx_logs_*" -mtime +1 -delete 2>/dev/null || true
 
 echo "Dashboard has been generated at $HTML_FILE"
