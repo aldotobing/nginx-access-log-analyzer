@@ -57,3 +57,8 @@ cd nginx-access-log-analyzer
 ## Download Log Option:
 
 For future analysis, the script includes an option to download the logs. This allows users to keep a record of past logs and perform historical analysis.
+
+## License
+
+This project is licensed under the [MIT License](./LICENSE).
+
