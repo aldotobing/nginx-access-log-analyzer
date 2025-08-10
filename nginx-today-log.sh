@@ -19,8 +19,7 @@ sudo awk -v today="$TODAY" '$0 ~ "\\[" today {print $0}' "$LOG_FILE" > "$TEMP_LO
 
 # Enhanced security patterns
 SQL_INJECTION_PATTERNS=(
-    "(%27|'|--|;|-- )"                         # Single quotes, comments, or semicolons
-    "(%20|\+)?(SELECT|UNION|INSERT|DELETE|UPDATE|ALTER|DROP|EXEC)(%20|\+)"  # SQL commands
+    "\"(GET|POST|HEAD).*?(%27|'|--|;|-- ).*\"" # Match only if SQLi pattern appears in request line, avoid false positive from headers like User-Agent
     "OR(%20|\+)(\d|')?='?"                     # OR-based injection
     "AND(%20|\+)(\d|')?='?"                    # AND-based injection
     "(\%27|')\s*--"                            # Single quote with comment, stricter
