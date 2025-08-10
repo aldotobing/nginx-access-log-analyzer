@@ -54,9 +54,22 @@ cd nginx-access-log-analyzer
 ./nginx-today-log.sh
 ```
 
-## Download Log Option:
+## Web Interface & Log Analysis
 
-For future analysis, the script includes an option to download the logs. This allows users to keep a record of past logs and perform historical analysis.
+This tool has a companion web interface available at [nginx.aldotobing.online](https://nginx.aldotobing.online) that provides a user-friendly way to analyze your Nginx access logs.
+
+### Download Log Option
+
+The script includes functionality to download logs for analysis. These logs can be directly uploaded to the web interface for detailed visualization and analysis. The web interface provides interactive dashboards, charts, and additional insights into your Nginx access patterns.
+
+Source code for the web interface is available at:  
+https://github.com/aldotobing/nginx-log-analyzer-web-ui
+
+### How to Use with Web Interface
+1. Run the script to analyze your Nginx logs
+2. Use the download option to save the log analysis
+3. Upload the downloaded logs to [nginx.aldotobing.online](https://nginx.aldotobing.online)
+4. Explore the interactive dashboard for in-depth analysis
 
 ## License
 
